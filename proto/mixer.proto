@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option go_package = "github.com/guycole/elder-mixer/proto";
+
+package proto;
+
+//
+service Mixer {
+  rpc EnqueueCommand(EnqueueRequest) returns (EnqueueResponse) {}
+}
+
+//
+message EnqueueRequest {
+  string client_id = 1; // requestor
+  string message = 2;   // command
+}
+
+//
+message EnqueueResponse {
+  string client_id = 1;  // requestor
+  string receipt_id = 2; // response receipt
+}
