@@ -22,7 +22,7 @@ func (st *ServerType) EnqueueCommand(ctx context.Context, in *pb.EnqueueRequest)
 	//command := in.Command
 	receiptId := uuid.NewString()
 
-	at.SugarLog.Infof("command %v", in.Command))
+	st.SugarLog.Infof("command %v", in.Command)
 
 	return &pb.EnqueueResponse{ClientId: clientId, ReceiptId: receiptId}, nil
 }
