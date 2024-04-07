@@ -19,8 +19,10 @@ func (st *ServerType) EnqueueCommand(ctx context.Context, in *pb.EnqueueRequest)
 	st.SugarLog.Debug("enqueue command")
 
 	clientId := in.ClientId
-	//message := in.Message
+	//command := in.Command
 	receiptId := uuid.NewString()
+
+	at.SugarLog.Infof("command %v", in.Command))
 
 	return &pb.EnqueueResponse{ClientId: clientId, ReceiptId: receiptId}, nil
 }

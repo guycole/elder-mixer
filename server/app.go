@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"net"
-	"time"
 
 	"go.uber.org/zap"
 
@@ -16,8 +15,6 @@ type AppType struct {
 	FeatureFlags uint32             // control run time features
 	GrpcPort     int                // gRPC port
 	SugarLog     *zap.SugaredLogger // logging
-
-	Quantum time.Duration
 	RunFlag bool // true while schedule
 }
 
@@ -34,15 +31,15 @@ func (at *AppType) initialize() {
 func (at *AppType) run() {
 	at.SugarLog.Info("run run run")
 
-	//at.SugarLog.Fatal(http.ListenAndServe(":"+address, at.Router))
-
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", at.GrpcPort))
 	if err != nil {
 		at.SugarLog.Fatalf("failed to listen: %v", err)
 	}
 
+	st := ServerType{SugarLog: at.SugarLog}
+
 	grpcServer := grpc.NewServer()
-	pb.RegisterMixerServer(grpcServer, &ServerType{})
+	pb.RegisterMixerServer(grpcServer, &st)
 	at.SugarLog.Infof("server listening at %v", listener.Addr())
 
 	if err := grpcServer.Serve(listener); err != nil {

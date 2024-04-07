@@ -9,10 +9,6 @@ import (
 	"time"
 )
 
-//var (
-//	rpcPort = flag.Int("port", 50051, "server port")
-//)
-
 const banner = "elder-mixer 0.0"
 
 func main() {
@@ -24,8 +20,6 @@ func main() {
 
 	app := AppType{SugarLog: zapSetup(false)}
 	app.SugarLog.Info(banner)
-
-	// configure from environment variables
 
 	envVars := [...]string{"FEATURE_FLAGS", "GRPC_PORT"}
 

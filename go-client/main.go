@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"log"
+	"strconv"
 	"time"
 
 	"github.com/google/uuid"
@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	addr = flag.String("addr", "localhost:50051", "the address to connect to")
+	addr = flag.String("addr", "localhost:50053", "the address to connect to")
 )
 
 const banner = "elder-mixer 0.0"
@@ -34,30 +34,9 @@ func writeCommand(id, cmd string) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	rr, err := cc.EnqueueCommand(ctx, &pb.EnqueueRequest{Message: cmd, ClientId: id})
+	er, err := cc.EnqueueCommand(ctx, &pb.EnqueueRequest{Command: cmd, ClientId: id})
 	if err != nil {
 		log.Fatalf("could not write: %v", err)
-	}
-
-	log.Printf("Result: %s", rr.GetReceiptId())
-}
-
-func receiveTraffic(id string) {
-	conn, err := grpc.Dial(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		log.Fatalf("did not connect: %v", err)
-	}
-
-	defer conn.Close()
-
-	cc := pb.NewMixerClient(conn)
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-
-	er, err := cc.EnqueueCommand(ctx, &pb.EnqueueRequest{ClientId: id, Message: "traffic"})
-	if err != nil {
-		log.Fatalf("could not read: %v", err)
 	}
 
 	log.Printf("Result: %s", er.GetReceiptId())
@@ -71,28 +50,14 @@ func main() {
 	clientId := uuid.NewString()
 	log.Printf("client id:%s", clientId)
 
-	var input string
-
 	counter := 0
 	runFlag := true
 
 	for runFlag {
-		// fmt.Print("prompt>")
-		fmt.Print("top top top\n")
-
-		input = fmt.Sprintf("command %d\n", counter)
-		print(input)
-
 		counter++
-
-		//		fmt.Scanln(&input)
-		//		if input == "quit" {
-		//			runFlag = false
-		//			continue
-		//		}
-
-		writeCommand(clientId, input)
-		receiveTraffic(clientId)
+		command := "simple" + strconv.Itoa(counter)
+		   
+		writeCommand(clientId, command) 
 
 		time.Sleep(8 * time.Second)
 	}

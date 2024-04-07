@@ -12,7 +12,7 @@ service Mixer {
 //
 message EnqueueRequest {
   string client_id = 1; // requestor
-  string message = 2;   // command
+  string command = 2;   // command
 }
 
 //
