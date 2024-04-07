@@ -132,3 +132,4 @@ venv.bak/
 .idea/
 
 .DS_Store
+py-lambda/elder-mixer.zip

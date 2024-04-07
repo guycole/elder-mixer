@@ -1,5 +1,4 @@
 import logging
-import random
 
 import grpc
 import mixer_pb2
