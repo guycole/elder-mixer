@@ -1,25 +1,24 @@
 #
 # Title: lambda_driver.py
 # Description: sns listener to gRPC adapter
-# Development Environment:OS X 11.0.1/Python 3.8.2
-# Lambda Environment: Python 3.9 runtime
+# Lambda Environment: Python 3.8 runtime
 #
-# import boto3
 import logging
-import json
+import os
 
 import grpc
-print(grpc)
 import mixer_pb2
 import mixer_pb2_grpc
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-def grpc_driver():
+def grpc_driver(server_address):
     logger.info("grpc_driver")
 
-    with grpc.insecure_channel("192.168.170.239:50053") as channel:
+    target = server_address + ":50053"
+
+    with grpc.insecure_channel(target) as channel:
         stub = mixer_pb2_grpc.MixerStub(channel)
         response = stub.EnqueueCommand(mixer_pb2.EnqueueRequest(command="test", client_id="client"))
         print("Response: " + response.receipt_id)
@@ -28,25 +27,12 @@ def grpc_driver():
 def dispatcher(payload: dict):
     logger.info("dispatcher")
 
-    #    logger.info(payload)
+    server_address = os.environ.get("SERVER_ADDRESS")
+    if server_address is None:
+        logger.error("SERVER_ADDRESS not set")
+        return
 
-    if "Records" in payload:
-        records = payload["Records"]
-        for record in records:
-            message = json.loads(record["Sns"]["Message"])
-
-            page = message["page"]
-            values = message["values"]
-            visited_at = message["visitedAt"]
-
-            logger.info(message)
-            logger.info(page)
-            logger.info(values)
-            logger.info(visited_at)
-        else:
-            logger.info("no records")
-
-    grpc_driver()
+    grpc_driver(server_address)
 
 def lambda_handler(event, context):
 
