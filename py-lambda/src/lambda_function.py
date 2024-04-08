@@ -9,6 +9,7 @@ import logging
 import json
 
 import grpc
+print(grpc)
 import mixer_pb2
 import mixer_pb2_grpc
 
@@ -18,7 +19,7 @@ logger.setLevel(logging.INFO)
 def grpc_driver():
     logger.info("grpc_driver")
 
-    with grpc.insecure_channel("localhost:50053") as channel:
+    with grpc.insecure_channel("192.168.170.239:50053") as channel:
         stub = mixer_pb2_grpc.MixerStub(channel)
         response = stub.EnqueueCommand(mixer_pb2.EnqueueRequest(command="test", client_id="client"))
         print("Response: " + response.receipt_id)

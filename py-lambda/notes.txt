@@ -1,1 +1,4 @@
 pip install grpcio grpcio-tools
+
+https://lambda.zapanote.com.s3.us-west-2.amazonaws.com/elder-mixer.zip
+https://lambda.zapanote.com.s3.us-west-2.amazonaws.com/grpc-layer.zip

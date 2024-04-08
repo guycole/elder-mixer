@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Title:lambda-build.sh
-# Description: assemble lambda zip
+# Description: assemble lambda and layer zip
 #
 PATH=/bin:/usr/bin:/etc:/usr/local/bin:$HOME/.local/bin:$HOME/local/bin; export PATH
 #
@@ -11,13 +11,15 @@ PATH=/bin:/usr/bin:/etc:/usr/local/bin:$HOME/.local/bin:$HOME/local/bin; export 
 rm -f elder-mixer.zip
 rm -f grpc-layer.zip
 #
-#pushd venv/lib/python3.12/site-packages
-#zip -r9 ../../../../grpc-layer.zip g*
-#popd
+mkdir -p python
+pushd venv/lib/python3.8/site-packages
+cp -r g* ../../../../python
+popd
+zip -r9 grpc-layer.zip python
+rm -rf python
 #
 cd src
 zip -r9 ../elder-mixer.zip *
-#popd
 #
-afplay /System/Library/Sounds/Hero.aiff
+#afplay /System/Library/Sounds/Hero.aiff
 #
